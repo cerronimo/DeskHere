@@ -1,0 +1,165 @@
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Box, Card, Typography, Tabs, Tab, Divider, CircularProgress } from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
+import DashboardTab from "@/src/components/profile/DashboardTab";
+import PersonalInfoTab from "@/src/components/profile/PersonalInfoTab";
+import ReservationsTab from "@/src/components/profile/ReservationsTab";
+import PaymentsTab from "@/src/components/profile/PaymentsTab";
+import { useUserRole } from "@/src/hooks/useUserRole";
+import { useProfileData } from "@/src/hooks/useProfileData";
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div 
+      role="tabpanel" 
+      hidden={value !== index} 
+      id={`profile-tabpanel-${index}`} 
+      aria-labelledby={`profile-tab-${index}`} 
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ py: { xs: 1.5, sm: 3 } }}>{children}</Box>
+      )}
+    </div>
+  );
+}
+
+function ProfileContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+
+  const [value, setValue] = useState(0);
+  const { role, loading: roleLoading } = useUserRole();
+  const { userData, reservations, payments, loading: profileLoading, setUserData } = useProfileData();
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
+  useEffect(() => {
+    if (tabParam === "reservations") {
+      setValue(2);
+    } else if (tabParam === "payments") {
+      setValue(3);
+    } else if (tabParam === "personal") {
+      setValue(1);
+    } else if (tabParam === "dashboard" || !tabParam) {
+      setValue(0);
+    }
+  }, [tabParam]);
+
+  if (roleLoading || profileLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+
+  return (
+    <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", px: { xs: 1, sm: 2 } }}>
+      <Typography 
+        variant="h4" 
+        sx={{ 
+          fontWeight: 700, 
+          mb: 0.5,
+          fontSize: { xs: "1.5rem", sm: "2rem" } 
+        }}
+      >
+        Hesabım
+      </Typography>
+      <Typography 
+        color="text.secondary" 
+        sx={{ 
+          mb: { xs: 2.5, sm: 4 },
+          fontSize: { xs: "13px", sm: "15px" }
+        }}
+      >
+        Kişisel bilgilerinizi, rezervasyonlarınızı ve ödemelerinizi buradan yönetebilirsiniz.
+      </Typography>
+
+      <Card 
+        sx={{ 
+          borderRadius: { xs: 2, sm: 3 }, 
+          boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)",
+          overflow: "hidden"
+        }}
+      >
+        <Box 
+          sx={{ 
+            borderBottom: 1, 
+            borderColor: "divider", 
+            bgcolor: "#F8FAFC" 
+          }}
+        >
+          <Tabs 
+            value={value} 
+            onChange={handleChange} 
+            variant="scrollable" 
+            scrollButtons="auto" 
+            allowScrollButtonsMobile
+            sx={{ 
+              px: { xs: 0.5, sm: 2 }, 
+              pt: 0.5,
+              "& .MuiTab-root": {
+                minHeight: { xs: 48, sm: 56 },
+                fontSize: { xs: "12px", sm: "14px" },
+                px: { xs: 1.5, sm: 2.5 },
+                py: { xs: 1, sm: 1.5 }
+              }
+            }}
+          >
+            <Tab icon={<DashboardIcon fontSize="small" />} iconPosition="start" label="Genel Bakış" />
+            <Tab icon={<PersonIcon fontSize="small" />} iconPosition="start" label="Kişisel Bilgiler" />
+            <Tab icon={<EventNoteIcon fontSize="small" />} iconPosition="start" label="Rezervasyonlarım" />
+            <Tab icon={<PaymentsIcon fontSize="small" />} iconPosition="start" label="Ödemelerim" />
+          </Tabs>
+        </Box>
+
+        <Divider />
+        <Box sx={{ p: { xs: 1.5, sm: 3, md: 4 } }}>
+          <CustomTabPanel value={value} index={0}>
+            <DashboardTab reservations={reservations} userData={userData} />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <PersonalInfoTab userData={userData} setUserData={setUserData} />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}>
+            <ReservationsTab reservations={reservations} />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={3}>
+            <PaymentsTab payments={payments} />
+          </CustomTabPanel>
+        </Box>
+      </Card>
+    </Box>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <CircularProgress />
+      </Box>
+    }>
+      <ProfileContent />
+    </Suspense>
+  );
+}
