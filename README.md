@@ -51,13 +51,13 @@ Administrators can manage buildings, floors, rooms, reservations, maintenance pe
 ## Main Page
 
 <div align="center">
-  <img src="docs/screenshots/main-page.png" width="850">
+  <img src="docs/screenshots/main-page.webp" width="850">
 </div>
 
 <br>
 
 <div align="center">
-  <img src="docs/screenshots/main-page2.png" width="850">
+  <img src="docs/screenshots/main-page2.webp" width="850">
 </div>
 
 ---
@@ -67,7 +67,7 @@ Administrators can manage buildings, floors, rooms, reservations, maintenance pe
 Users can browse available buildings and locations before selecting a meeting room.
 
 <div align="center">
-  <img src="docs/screenshots/locations.png" width="850">
+  <img src="docs/screenshots/locations.webp" width="850">
 </div>
 
 ---
@@ -77,7 +77,7 @@ Users can browse available buildings and locations before selecting a meeting ro
 Each room includes information such as capacity, available services, images, availability and reservation options.
 
 <div align="center">
-  <img src="docs/screenshots/room-details.png" width="850">
+  <img src="docs/screenshots/room-details.webp" width="850">
 </div>
 
 ---
@@ -87,7 +87,7 @@ Each room includes information such as capacity, available services, images, ava
 DeskHere provides information about available meeting room services and facilities.
 
 <div align="center">
-  <img src="docs/screenshots/services.png" width="850">
+  <img src="docs/screenshots/services.webp" width="850">
 </div>
 
 ---
